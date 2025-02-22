@@ -8,7 +8,7 @@ import os
 app = FastAPI()
 
 # Serve static files (CSS, JS)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="."), name="static")
 
 # Ensure CSV file exists with proper headers
 CSV_FILE = "users_data.csv"
