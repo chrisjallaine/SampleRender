@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script>
+        async function fetchUsers() {
+            const response = await fetch("/users/");
+            const data = await response.json();
+            const usersList = document.getElementById('users-list');
+            usersList.innerHTML = "";
+            if (data.users) {
+                data.users.forEach(user => {
+                    const userItem = document.createElement('li');
+                    userItem.textContent = `ID: ${user.user_id}, Username: ${user.username}`;
+                    usersList.appendChild(userItem);
+                });
+            }
+        }
+
+        async function addUser() {
+            const userId = document.getElementById('user-id').value;
+            const username = document.getElementById('username').value;
+            const response = await fetch('/user/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify([{ user_id: userId, username: username }])
+            });
+            const data = await response.json();
+            if (data.msg) {
+                alert(data.msg);
+                fetchUsers(); // Refresh user list
+            }
+        }
+
+        window.onload = fetchUsers;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>User Dashboard</h1>
+
+        <section>
+            <h2>Create User</h2>
+            <input type="number" id="user-id" placeholder="User ID" required>
+            <input type="text" id="username" placeholder="Username" required>
+            <button onclick="addUser()">Add User</button>
+        </section>
+
+        <section>
+            <h2>Users List</h2>
+            <ul id="users-list"></ul>
+        </section>
+    </div>
+</body>
+</html>
